@@ -7,6 +7,8 @@ String allData = "";
 String bluetoothReadString = "";
 String soutString;
 float afstandFloat;
+String debugString;
+String directionString;
 //String printString = "";
 //int index = 0;
 PFont font;
@@ -51,7 +53,7 @@ float middleButtonY = 125;
 void setup() {
   
   size(width, height);
-  port = new Serial(this, "COM40", 9600);
+  port = new Serial(this, "COM6", 9600);
   
   port.bufferUntil('\n');
   font = loadFont("AgencyFB-Reg-16.vlw");
@@ -84,7 +86,7 @@ void draw() {
        mouseY > aanButtonY && 
        mouseY < aanButtonY + aanButtonHeight){
          println("AAN button!");
-         port.write("1");
+         port.write("2");
     }
     
     if(mouseX > uitButtonX && 
@@ -100,7 +102,7 @@ void draw() {
        mouseY > upButtonY && 
        mouseY < upButtonY + upButtonHeight){
          println("UP button");
-         port.write("UP"); 
+         port.write("w"); 
     }
     
     if(mouseX > downButtonX && 
@@ -108,32 +110,32 @@ void draw() {
        mouseY > downButtonY && 
        mouseY < downButtonY + downButtonHeight){
          println("DOWN button");
-         port.write("DOWN"); 
+         port.write("s"); 
     }
     if(mouseX > leftButtonX && 
        mouseX < leftButtonX + leftButtonWidth && 
        mouseY > leftButtonY && 
        mouseY < leftButtonY + leftButtonHeight){
          println("LEFT button");
-         port.write("LEFT"); 
+         port.write("a"); 
     }
     if(mouseX > rightButtonX && 
        mouseX < rightButtonX + rightButtonWidth && 
        mouseY > rightButtonY && 
        mouseY < rightButtonY + rightButtonHeight){
          println("RIGHT button");
-         port.write("RIGHT"); 
+         port.write("d"); 
     }
     if(mouseX > middleButtonX && 
        mouseX < middleButtonX + middleButtonWidth && 
        mouseY > middleButtonY && 
        mouseY < middleButtonY + middleButtonHeight){
          println("MIDDLE button");
-         port.write("OK"); 
+         port.write("f"); 
     }
   } 
   fill(0,255,0);
-  text("Data uit arduino: " + soutString + ", " + afstandFloat + ".", arduinoDataPosX, arduinoDataPosY);
+  text("Data uit arduino: " + debugString + ", " + directionString + ", " + afstandFloat + ".", arduinoDataPosX, arduinoDataPosY);
 }
 void serialEvent(Serial port) {
   while (port.available() > 0){
@@ -142,8 +144,9 @@ void serialEvent(Serial port) {
    
     //bluetoothReadString = data.substring(0, data.length() - 1);
     String data[] = split(allData, ',');
-    String debugString = data[0];
-    String afstandString = data[1];
+    debugString = data[0];
+    directionString = data[1];
+    String afstandString = data[2];
     println(debugString);
     println(afstandString);
     //int soutStringIndex = bluetoothReadString.indexOf(",");
