@@ -1,6 +1,9 @@
+import controlP5.*;
 import processing.serial.*;
 
 Serial port;
+
+ControlP5 controlP5;
 int width = 300;
 int height = 500;
 String allData = "";
@@ -22,43 +25,65 @@ float uitButtonHeight = 50;
 float uitButtonX = width - uitButtonWidth - 25;
 float uitButtonY = height - uitButtonHeight - 25;
 float arduinoDataPosX = width - 275;
-float arduinoDataPosY = 300;
+float arduinoDataPosY = 400;
+
+float modusButtonWidth = 50;
+float modusButtonHeight = 50;
+float modus1ButtonX = 15;
+float modus1ButtonY = 15;
+float modus2ButtonX = 85;
+float modus2ButtonY = 15;
+float modus3ButtonX = 160;
+float modus3ButtonY = 15;
+float modus0ButtonX = 235;
+float modus0ButtonY = 15;
 
 float upButtonWidth = 50;
 float upButtonHeight = 75;
 float upButtonX = 125;
-float upButtonY = 25;
+float upButtonY = 75;
 
 float downButtonWidth = 50;
 float downButtonHeight = 75;
 float downButtonX = 125;
-float downButtonY = 200;
+float downButtonY = 250;
 
 float leftButtonWidth = 75;
 float leftButtonHeight = 50;
 float leftButtonX = 25;
-float leftButtonY = 125;
+float leftButtonY = 175;
 
 float rightButtonWidth = 75;
 float rightButtonHeight = 50;
 float rightButtonX = 200;
-float rightButtonY = 125;
+float rightButtonY = 175;
 
 float middleButtonWidth = 50;
 float middleButtonHeight = 50;
 float middleButtonX = 125;
-float middleButtonY = 125;
+float middleButtonY = 175;
 
+float turnLeftButtonX = 50;
+float turnLeftButtonY = 100;
+float turnRightButtonX = 200;
+float turnRightButtonY = 100;
+
+int modus1 = 166;
+int modus2 = 167;
+int modus3 = 168;
+int modus0 = 169;
 
 void setup() {
   
   size(width, height);
-  port = new Serial(this, "COM6", 9600);
+  port = new Serial(this, "COM40", 9600);
   
   port.bufferUntil('\n');
   font = loadFont("AgencyFB-Reg-16.vlw");
   textFont(font, 16);
-  
+  controlP5 = new ControlP5(this);
+   // parameters  : name, minimum, maximum, default value (float), x, y, width, height
+  controlP5.addSlider("Stuur",140,40,90,15,350,275,30);
 }
 
 void draw() {
@@ -73,11 +98,18 @@ void draw() {
   fill(255);
   text("Led UIT",uitButtonX + (uitButtonWidth*0.1),uitButtonY+ (uitButtonHeight*0.7));
   
+  rect(modus1ButtonX, modus1ButtonY, modusButtonWidth, modusButtonHeight);
+  rect(modus2ButtonX,modus2ButtonY,modusButtonWidth,modusButtonHeight);
+  rect(modus3ButtonX,modus3ButtonY,modusButtonWidth,modusButtonHeight);
+  rect(modus0ButtonX,modus0ButtonY,modusButtonWidth,modusButtonHeight);
+  
+  
   rect(upButtonX,upButtonY,upButtonWidth,upButtonHeight);
   rect(downButtonX,downButtonY,downButtonWidth,downButtonHeight);
   rect(leftButtonX,leftButtonY,leftButtonWidth,leftButtonHeight);
   rect(rightButtonX,rightButtonY,rightButtonWidth,rightButtonHeight);
   rect(middleButtonX,middleButtonY,middleButtonWidth,middleButtonHeight);
+
   
   text(bluetoothReadString,100,200);
   if(mousePressed){
@@ -86,7 +118,7 @@ void draw() {
        mouseY > aanButtonY && 
        mouseY < aanButtonY + aanButtonHeight){
          println("AAN button!");
-         port.write("2");
+         port.write("l");
     }
     
     if(mouseX > uitButtonX && 
@@ -94,7 +126,7 @@ void draw() {
        mouseY > uitButtonY && 
        mouseY < uitButtonY + uitButtonHeight){
          println("UIT button");
-         port.write("0"); 
+         port.write("k"); 
     }
     
     if(mouseX > upButtonX && 
@@ -102,7 +134,7 @@ void draw() {
        mouseY > upButtonY && 
        mouseY < upButtonY + upButtonHeight){
          println("UP button");
-         port.write("w"); 
+         port.write("W"); 
     }
     
     if(mouseX > downButtonX && 
@@ -110,28 +142,57 @@ void draw() {
        mouseY > downButtonY && 
        mouseY < downButtonY + downButtonHeight){
          println("DOWN button");
-         port.write("s"); 
+         port.write("S"); 
     }
     if(mouseX > leftButtonX && 
        mouseX < leftButtonX + leftButtonWidth && 
        mouseY > leftButtonY && 
        mouseY < leftButtonY + leftButtonHeight){
          println("LEFT button");
-         port.write("a"); 
+         port.write("A"); 
     }
     if(mouseX > rightButtonX && 
        mouseX < rightButtonX + rightButtonWidth && 
        mouseY > rightButtonY && 
        mouseY < rightButtonY + rightButtonHeight){
          println("RIGHT button");
-         port.write("d"); 
+         port.write("D"); 
     }
     if(mouseX > middleButtonX && 
        mouseX < middleButtonX + middleButtonWidth && 
        mouseY > middleButtonY && 
        mouseY < middleButtonY + middleButtonHeight){
          println("MIDDLE button");
-         port.write("f"); 
+         port.write("F"); 
+    }
+     
+    if(mouseX > modus1ButtonX && 
+       mouseX < modus1ButtonX + modusButtonWidth && 
+       mouseY > modus1ButtonY && 
+       mouseY < modus1ButtonY + modusButtonHeight){
+         println("MODUS 1 button");
+         port.write("1"); 
+    }
+    if(mouseX > modus2ButtonX && 
+       mouseX < modus2ButtonX + modusButtonWidth && 
+       mouseY > modus2ButtonY && 
+       mouseY < modus2ButtonY + modusButtonHeight){
+         println("MODUS 2 button");
+         port.write("2"); 
+    }
+    if(mouseX > modus3ButtonX && 
+       mouseX < modus3ButtonX + modusButtonWidth && 
+       mouseY > modus3ButtonY && 
+       mouseY < modus3ButtonY + modusButtonHeight){
+         println("MODUS 3 button");
+         port.write("3"); 
+    }
+    if(mouseX > modus0ButtonX && 
+       mouseX < modus0ButtonX + modusButtonWidth && 
+       mouseY > modus0ButtonY && 
+       mouseY < modus0ButtonY + modusButtonHeight){
+         println("MODUS 0 button");
+         port.write("0"); 
     }
   } 
   fill(0,255,0);
@@ -145,20 +206,42 @@ void serialEvent(Serial port) {
     //bluetoothReadString = data.substring(0, data.length() - 1);
     String data[] = split(allData, ',');
     debugString = data[0];
-    directionString = data[1];
-    String afstandString = data[2];
+    //directionString = data[1];
+    
     println(debugString);
-    println(afstandString);
+    println(directionString);
     //int soutStringIndex = bluetoothReadString.indexOf(",");
     //afstandStringIndex = bluetoothReadString.indexOf(",", soutStringIndex);
     //String soutString = bluetoothReadString.substring(0, soutStringIndex);
     //String afstandString = bluetoothReadString.substring(soutStringIndex + 1, bluetoothReadString.length());
     
   
-    float afstandFloat = float(afstandString);
+    //float afstandFloat = float(afstandString);
   }
 }
 
+void controlEvent(ControlEvent theEvent) {
+  /* events triggered by controllers are automatically forwarded to
+     the controlEvent method. by checking the name of a controller one can
+     distinguish which of the controllers has been changed.
+  */
+  /* check if the event is from a controller otherwise you'll get an error
+     when clicking other interface elements like Radiobutton that don't support
+     the controller() methods
+  */
+  
+  if(theEvent.isController()) {
+    float stuurValue = theEvent.controller().value();
+    int stuurValueInt = int(stuurValue);
+    stuurValueInt = stuurValueInt + 100;
+    print("control event from : "+theEvent.controller().name());
+    println(", value : "+stuurValueInt);
+    port.write(stuurValueInt);
+    
+    
+    
+  }
+}
 
   /*
   if(value == '0'){
